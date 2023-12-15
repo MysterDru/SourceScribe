@@ -16,23 +16,38 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.5.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.5.0"/>
         <PackageReference Include="NTypewriter.CodeModel" Version="0.4.5"
                           PrivateAssets="all"
                           GeneratePathProperty="true"/>
         <PackageReference Include="NTypewriter.CodeModel.Roslyn" Version="0.4.5"
                           PrivateAssets="all"
-                          GeneratePathProperty="true" />
-
+                          GeneratePathProperty="true"/>
+        <PackageReference Include="Scriban" Version="5.9.0"
+                          Pack="true"
+                          PackagePath="analyzers/dotnet/cs"
+                          Visible="false"/>
+        <PackageReference Include="System.Linq" Version="4.3.0"
+                          Pack="true"
+                          PackagePath="analyzers/dotnet/cs"
+                          Visible="false"/>
+        <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4"
+                          Pack="true"
+                          PackagePath="analyzers/dotnet/cs"
+                          Visible="false"/>
         <None Include="$(PkgNTypewriter_CodeModel_Roslyn)\lib\netstandard2.0\*.dll"
               Pack="true"
               PackagePath="analyzers/dotnet/cs"
-              Visible="false" />
+              Visible="false"/>
         <None Include="$(PkgNTypewriter_CodeModel)\lib\netstandard2.0\*.dll"
               Pack="true"
               PackagePath="analyzers/dotnet/cs"
-              Visible="false" />
+              Visible="false"/>
+        <None Include="$(PkgScriban)\lib\netstandard2.0\*.dll"
+              Pack="true"
+              PackagePath="analyzers/dotnet/cs"
+              Visible="false"/>
     </ItemGroup>
 
     <PropertyGroup>
@@ -44,10 +59,13 @@
         <ItemGroup>
             <TargetPathWithTargetPlatformMoniker
                     Include="$(PkgNTypewriter_CodeModel_Roslyn)\lib\netstandard2.0\NTypewriter.CodeModel.Roslyn.dll"
-                    IncludeRuntimeDependency="false" />
+                    IncludeRuntimeDependency="false"/>
             <TargetPathWithTargetPlatformMoniker
                     Include="$(PkgNTypewriter_CodeModel)\lib\netstandard2.0\NTypewriter.CodeModel.dll"
-                    IncludeRuntimeDependency="false" />
+                    IncludeRuntimeDependency="false"/>
+            <TargetPathWithTargetPlatformMoniker
+                    Include="$(PkgScriban)\lib\netstandard2.0\Scriban.dll"
+                    IncludeRuntimeDependency="false"/>
         </ItemGroup>
     </Target>
 </Project>
