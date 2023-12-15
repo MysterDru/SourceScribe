@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+	<SignAssembly>true</SignAssembly>
+	<AssemblyOriginatorKeyFile>xKey.snk</AssemblyOriginatorKeyFile>
+	<Version>0.4.5</Version>
+	<AssemblyVersion>0.4.5</AssemblyVersion>
+    <Authors>NeVeSpl</Authors>
+	<Company>NeVeSpl</Company>
+	<Copyright>(c) NTypewriter</Copyright>
+	<PackageProjectUrl>https://github.com/NeVeSpl/NTypewriter</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/NeVeSpl/NTypewriter</RepositoryUrl>
+	<NeutralLanguage>en</NeutralLanguage>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	
+	<PackageIcon>nt.128.128.png</PackageIcon>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<Description>Abstract model of the C# code.</Description>
+	<PackageOutputPath>..\nugets\</PackageOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>obj\Debug\netstandard2.0\NTypewriter.CodeModel.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>obj\Release\netstandard2.0\NTypewriter.CodeModel.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\Documentation\nt.128.128.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

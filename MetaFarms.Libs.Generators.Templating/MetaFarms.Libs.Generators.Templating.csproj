@@ -22,13 +22,14 @@
         <PackageReference Include="NTypewriter.CodeModel" Version="0.4.5"
                           PrivateAssets="all"
                           GeneratePathProperty="true"/>
-        <PackageReference Include="NTypewriter.CodeModel.Roslyn" Version="0.4.5"
-                          PrivateAssets="all"
-                          GeneratePathProperty="true"/>
         
         <PackageReference Include="Scriban" Version="5.9.0" IncludeAssets="Build"/>
         
         <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="NTypewriter\CodeModel\" />
     </ItemGroup>
     <!-- support loading scriban dependencies into source directly -->
     <PropertyGroup>
@@ -42,12 +43,6 @@
     </PropertyGroup>
     <Target Name="GetDependencyTargetPaths">
         <ItemGroup>
-            <TargetPathWithTargetPlatformMoniker
-                    Include="$(PkgNTypewriter_CodeModel_Roslyn)\lib\netstandard2.0\NTypewriter.CodeModel.Roslyn.dll"
-                    IncludeRuntimeDependency="false"/>
-            <TargetPathWithTargetPlatformMoniker
-                    Include="$(PkgNTypewriter_CodeModel)\lib\netstandard2.0\NTypewriter.CodeModel.dll"
-                    IncludeRuntimeDependency="false"/>
         </ItemGroup>
     </Target>
 </Project>

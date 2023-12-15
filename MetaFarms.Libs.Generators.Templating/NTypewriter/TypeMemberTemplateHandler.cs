@@ -13,20 +13,25 @@ using NTypewriter.CodeModel;
 using NTypewriter.CodeModel.Roslyn;
 using Scriban;
 using Scriban.Runtime;
+using Type = NTypewriter.CodeModel.Roslyn.Type;
 
 namespace MetaFarms.Libs.Generators.Templating.NTypewriter;
 
 public static class TypeMemberTemplateHandler
 {
-    private static Lazy<MethodInfo> _createTypeMethod = new (() =>
-    {
-        var t = typeof(CodeModel).Assembly.GetType("NTypewriter.CodeModel.Roslyn.Type");
-
-        return t?.GetMethod("Create", new Type[] { typeof(ITypeSymbol), typeof(ISymbolBase) });
-    });
+    // private static Lazy<MethodInfo> _createTypeMethod = new (() =>
+    // {
+    //     var t = typeof(CodeModel).Assembly.GetType("NTypewriter.CodeModel.Roslyn.Type");
+    //
+    //     return t?.GetMethod("Create", new Type[] { typeof(ITypeSymbol), typeof(ISymbolBase) });
+    // });
 
     internal static void RegisterOutputForTypeMembers(IncrementalGeneratorInitializationContext context)
     {
+        IPropertySymbol prop;
+        
+        
+        
         var typesProvider = context.SyntaxProvider.CreateSyntaxProvider((node, _) =>
             {
                 return node is TypeDeclarationSyntax typeSyntax && typeSyntax.AttributeLists
@@ -57,7 +62,7 @@ public static class TypeMemberTemplateHandler
         var attributes = arg2.Left.GetAttributes()
             .Where(x => x.AttributeClass?.Name.StartsWith("TypeMemberTemplate") == true);
 
-        IType typeInfo = _createTypeMethod.Value?.Invoke(null, new object[] { typeSymbol, null }) as IType;
+        IType typeInfo = Type.Create(typeSymbol);
 
         if (typeInfo == null)
         {
