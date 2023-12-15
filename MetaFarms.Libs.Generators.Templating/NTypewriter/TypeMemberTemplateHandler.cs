@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -72,18 +73,7 @@ public static class TypeMemberTemplateHandler
             var result = foundFile.template.Render(typeInfo);
 
             var name = Path.GetFileName(foundFile.fileName);
-            arg1.AddSource($"{arg2.Left.Name}_{name}.g.cs", SourceText.From(result)); 
+            arg1.AddSource($"{arg2.Left.Name}_{name}.g.cs", SourceText.From(result, Encoding.UTF8)); 
         }
     }
-
-    // private static void GenerateFromTypeTemplateAttributes(
-    //     SourceProductionContext ctx,
-    //     (ITypeSymbol type, Compilation compilation) provider)
-    // {
-    //     // var model = provider.compilation.GetSemanticModel(provider.klass.SyntaxTree);
-    //     // var typeSymbol = model.GetDeclaredSymbol(provider.klass);
-    //     var typeSymbol = provider.type;
-    //
-    //     
-    // }
 }
