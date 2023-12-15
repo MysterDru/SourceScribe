@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <RootNamespace>MetaFarms.Libs.Templating.Sample</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\MetaFarms.Libs.Generators.Templating\MetaFarms.Libs.Generators.Templating.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="DDD.UbiquitousLanguageRegistry.txt"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Templates\Test.scriban" />
+      <AdditionalFiles Include="Templates\Test.scriban" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="NTypewriter.CodeModel.Roslyn" Version="0.4.5" />
+    </ItemGroup>
+
+</Project>
