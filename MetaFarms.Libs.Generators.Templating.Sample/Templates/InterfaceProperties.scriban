@@ -1,0 +1,18 @@
+namespace {{ member.namespace  }};
+
+partial class {{ member.name }}
+{   
+    {{
+        include '_includes.scriban' 
+    }}
+
+    {{~ for current_prop in member.properties ~}}
+        // {{ current_prop.full_name }}
+    {{~ end ~}}
+
+    {{~ for interface in member.all_interfaces ~}}    
+        #region {{ interface.name }}
+
+        #endregion    
+    {{~ end ~}}
+}

@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.Text;
 using NTypewriter.CodeModel;
 using NTypewriter.CodeModel.Roslyn;
 using Scriban;
+using Scriban.Runtime;
 
 namespace MetaFarms.Libs.Generators.Templating.NTypewriter;
 
@@ -33,14 +34,13 @@ public static class TypeMemberTemplateHandler
                     .Any(a => a.Name.ToString()
                         .StartsWith("TypeMemberTemplate"));
             },
-            (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node) as INamedTypeSymbol);
+            (ctx, _) => { return ctx.SemanticModel.GetDeclaredSymbol(ctx.Node) as INamedTypeSymbol; });
 
         var files = context.AdditionalTextsProvider.Where(x => Path.GetFileName(x.Path)
                 .EndsWith(".scriban"))
-            .Select((f, _) => (fileName: Path.GetFileName(f.Path), content: Template.Parse(f.GetText()?.ToString() ?? string.Empty, f.Path)))
+            .Select((f, _) => (fileName: Path.GetFileName(f.Path), content: f.GetText()
+                ?.ToString() ?? string.Empty))
             .Collect();
-            
-            
 
         var combined = typesProvider.Combine(files);
 
@@ -49,31 +49,59 @@ public static class TypeMemberTemplateHandler
 
     private static void GenerateFromTypeTemplateAttributes(
         SourceProductionContext arg1,
-        (INamedTypeSymbol Left, ImmutableArray<(string fileName, Template template)> Right) arg2)
+        (INamedTypeSymbol Left, ImmutableArray<(string fileName, string template)> Right) arg2)
     {
         var typeSymbol = arg2.Left;
         var files = arg2.Right;
 
-        var attributes = arg2.Left.GetAttributes().Where(x => x.AttributeClass?.Name.StartsWith("TypeMemberTemplate") == true);
+        var attributes = arg2.Left.GetAttributes()
+            .Where(x => x.AttributeClass?.Name.StartsWith("TypeMemberTemplate") == true);
 
         IType typeInfo = _createTypeMethod.Value?.Invoke(null, new object[] { typeSymbol, null }) as IType;
+
+        if (typeInfo == null)
+        {
+            // todo: log error for null/notfound type
+            return;
+        }
 
         foreach (var attribute in attributes)
         {
             var templateName = attribute.ConstructorArguments.ElementAt(0)
                 .Value?.ToString();
-            var foundFile =files.FirstOrDefault(x => Path.GetFileName(x.fileName) == templateName);
+            var foundFile = files.FirstOrDefault(x => Path.GetFileName(x.fileName) == templateName);
 
-            
-            if (foundFile.template== null)
+            if (foundFile.template == null)
             {
                 continue;
             }
 
-            var result = foundFile.template.Render(typeInfo);
+            var template = Template.Parse(foundFile.template);
+            var context = GetTemplateContext(typeInfo, files);
+            var result = template.Render(context);
 
             var name = Path.GetFileName(foundFile.fileName);
-            arg1.AddSource($"{arg2.Left.Name}_{name}.g.cs", SourceText.From(result, Encoding.UTF8)); 
+            arg1.AddSource($"{arg2.Left.Name}_{name}.g.cs", SourceText.From(result, Encoding.UTF8));
         }
+    }
+
+    private static TemplateContext GetTemplateContext(
+        IType typeInfo,
+        ImmutableArray<(string fileName, string template)> files)
+    {
+        var scriptObject = new ScriptObject();
+        scriptObject.Import(new
+        {
+            member = typeInfo,
+        });
+
+        var context = new TemplateContext
+        {
+            AutoIndent = false,
+            TemplateLoader = new AdditionalFilesTemplateLoader(files)
+        };
+        context.PushGlobal(scriptObject);
+
+        return context;
     }
 }

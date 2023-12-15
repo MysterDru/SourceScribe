@@ -1,1 +1,6 @@
-namespace TestNamespace;
+namespace {{ member.namespace  }};
+
+partial class {{ member.name }}
+{
+    // todo: add more stuff to template here
+}

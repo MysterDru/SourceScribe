@@ -16,7 +16,10 @@
 
     <ItemGroup>
       <None Remove="Templates\Test.scriban" />
+      <AdditionalFiles Include="Templates\InterfaceProperties.scriban" />
       <AdditionalFiles Include="Templates\Test.scriban" />
+      <None Remove="Templates\_includes.scriban" />
+      <AdditionalFiles Include="Templates\_includes.scriban" />
     </ItemGroup>
 
     <ItemGroup>

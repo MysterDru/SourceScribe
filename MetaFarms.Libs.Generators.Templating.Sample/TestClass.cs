@@ -3,6 +3,10 @@ using MetaFarms.Libs.Generators.Templating;
 namespace MetaFarms.Libs.Templating.Sample;
 
 [TypeMemberTemplate("Test.scriban")]
-public class TestClass
+[TypeMemberTemplate("InterfaceProperties.scriban")]
+public partial class TestClass : Interfaces.IProperties
 {
+    public string PropertyOne { get; set; }
+
+    public string PropertyTwo { get; set; }
 }
