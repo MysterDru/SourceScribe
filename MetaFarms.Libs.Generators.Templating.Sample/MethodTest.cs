@@ -4,7 +4,7 @@ using MetaFarms.Libs.Templating.Sample.Interfaces;
 namespace MetaFarms.Libs.Templating.Sample;
 
 [TypeMemberTemplate("CompositionMethods.scriban")]
-public class MethodTest : IHasMethodOne
+public class MethodTest : IHasMethodOne, IHasMethodTwo<string>
 {
     
 }

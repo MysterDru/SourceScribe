@@ -3,5 +3,24 @@ namespace {{ member.namespace  }};
 
 partial class {{ member.name }}
 {   
+    {{ func hasInterface;
+        ret true;
+        end;
+    }}
+
+    {{ interfaceNames = member.all_interfaces | array.map "bare_name" }}
     
+    {{ for interfaceName in interfaceNames ~}}
+    
+        {{ if interfaceName == "IHasMethodOne" ~}}    
+            // todo: method one
+        {{ end }}
+        
+        {{ if interfaceName == "IHasMethodTwo" ~}}    
+                    // todo: method two
+        {{ end }}
+        
+        
+        
+    {{ end }}
 }
