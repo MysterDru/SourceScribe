@@ -1,0 +1,8 @@
+{{func get_interface(member, interfaceName)
+    for interface in member.all_interfaces
+        if interface.bare_name == interfaceName
+            ret interface
+        end
+    end
+    ret null
+end}}

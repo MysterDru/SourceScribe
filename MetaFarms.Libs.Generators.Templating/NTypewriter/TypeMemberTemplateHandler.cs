@@ -81,12 +81,25 @@ public static class TypeMemberTemplateHandler
                 continue;
             }
 
-            var template = Template.Parse(foundFile.template);
-            var context = GetTemplateContext(typeInfo, files);
-            var result = template.Render(context);
-
             var name = Path.GetFileName(foundFile.fileName);
-            arg1.AddSource($"{arg2.Left.Name}_{name}.g.cs", SourceText.From(result, Encoding.UTF8));
+
+            string output;
+            try
+            {
+                var template = Template.Parse(foundFile.template);
+                var context = GetTemplateContext(typeInfo, files);
+                output = template.Render(context);
+            }
+            catch (Exception ex)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("// Error while rendering template:");
+                sb.AppendLine($"// {ex.Message}");
+                output = sb.ToString();
+            }
+
+            
+            arg1.AddSource($"{arg2.Left.Name}_{name}.g.cs", SourceText.From(output, Encoding.UTF8));
         }
     }
 
