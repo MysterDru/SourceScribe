@@ -24,7 +24,7 @@ internal sealed class TypeMemberTemplateAttribute : Attribute
     {
         context.RegisterPostInitializationOutput(ExecutePostInitialization);
 
-        TypeMemberTemplateHandler.RegisterOutputForTypeMembers(context);
+        TypeMemberTemplateHandler.Register(context);
     }
 
     private void ExecutePostInitialization(IncrementalGeneratorPostInitializationContext obj)

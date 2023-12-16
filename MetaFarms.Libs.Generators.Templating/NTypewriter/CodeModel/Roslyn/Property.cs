@@ -1,4 +1,7 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using Microsoft.CodeAnalysis;
 
 namespace NTypewriter.CodeModel.Roslyn
 {
@@ -11,6 +14,8 @@ namespace NTypewriter.CodeModel.Roslyn
         public IMethod GetMethod => symbol.GetMethod != null ? Method.Create(symbol.GetMethod) : null;
 
         public IMethod SetMethod => symbol.SetMethod != null ? Method.Create(symbol.SetMethod) : null;
+
+        public List<IParameter> Parameters => new List<IParameter>(symbol.Parameters.Select(p => Parameter.Create(p)));
 
         public bool IsIndexer => symbol.IsIndexer;
 

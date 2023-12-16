@@ -12,38 +12,38 @@ using Microsoft.CodeAnalysis.Text;
 using NTypewriter.CodeModel;
 using NTypewriter.CodeModel.Roslyn;
 using Scriban;
+using Scriban.Parsing;
 using Scriban.Runtime;
+using Scriban.Syntax;
+using Location = Microsoft.CodeAnalysis.Location;
 using Type = NTypewriter.CodeModel.Roslyn.Type;
 
 namespace MetaFarms.Libs.Generators.Templating.NTypewriter;
 
 public static class TypeMemberTemplateHandler
 {
-    // private static Lazy<MethodInfo> _createTypeMethod = new (() =>
-    // {
-    //     var t = typeof(CodeModel).Assembly.GetType("NTypewriter.CodeModel.Roslyn.Type");
-    //
-    //     return t?.GetMethod("Create", new Type[] { typeof(ITypeSymbol), typeof(ISymbolBase) });
-    // });
-
-    internal static void RegisterOutputForTypeMembers(IncrementalGeneratorInitializationContext context)
+    private static readonly DiagnosticDescriptor ScirbanParseError
+        = new("TEMPL001",                               // id
+            "Error parsing template",           // title
+            "{0}", // message
+            $"MetaFarms.Libs.Generators.Templating.NTypewriter",                          // category
+            DiagnosticSeverity.Error,
+            true);
+    
+    internal static void Register(IncrementalGeneratorInitializationContext context)
     {
-        IPropertySymbol prop;
-        
-        
-        
         var typesProvider = context.SyntaxProvider.CreateSyntaxProvider((node, _) =>
             {
                 return node is TypeDeclarationSyntax typeSyntax && typeSyntax.AttributeLists
                     .SelectMany(a => a.Attributes)
                     .Any(a => a.Name.ToString()
-                        .StartsWith("TypeMemberTemplate"));
+                        .StartsWith(Attributes.TypeMemberTemplateAttribute.Name));
             },
             (ctx, _) => { return ctx.SemanticModel.GetDeclaredSymbol(ctx.Node) as INamedTypeSymbol; });
 
         var files = context.AdditionalTextsProvider.Where(x => Path.GetFileName(x.Path)
                 .EndsWith(".scriban"))
-            .Select((f, _) => (fileName: Path.GetFileName(f.Path), content: f.GetText()
+            .Select((f, _) => (fileName: Path.GetFileName(f.Path), filePath: f.Path, content: f.GetText()
                 ?.ToString() ?? string.Empty))
             .Collect();
 
@@ -54,16 +54,21 @@ public static class TypeMemberTemplateHandler
 
     private static void GenerateFromTypeTemplateAttributes(
         SourceProductionContext arg1,
-        (INamedTypeSymbol Left, ImmutableArray<(string fileName, string template)> Right) arg2)
+        (INamedTypeSymbol Left, ImmutableArray<(string fileName, string filePath, string template)> Right) arg2)
     {
         var typeSymbol = arg2.Left;
         var files = arg2.Right;
 
         var attributes = arg2.Left.GetAttributes()
-            .Where(x => x.AttributeClass?.Name.StartsWith("TypeMemberTemplate") == true);
+            .Where(x => x.AttributeClass?.Name.StartsWith(Attributes.TypeMemberTemplateAttribute.Name) == true);
 
         IType typeInfo = Type.Create(typeSymbol);
 
+        if (typeInfo?.BareName == "GenerateInterfaceExample")
+        {
+            var prop = (typeInfo as Class).Properties.First(x => x.Name == "this[]");
+        }
+        
         if (typeInfo == null)
         {
             // todo: log error for null/notfound type
@@ -83,29 +88,41 @@ public static class TypeMemberTemplateHandler
 
             var name = Path.GetFileName(foundFile.fileName);
 
-            string output;
             try
             {
-                var template = Template.Parse(foundFile.template);
+                var template = Template.Parse(foundFile.template, foundFile.filePath);
                 var context = GetTemplateContext(typeInfo, files);
-                output = template.Render(context);
+                var output = template.Render(context);
+
+                arg1.AddSource($"{arg2.Left.Name}_{name}.g.cs", SourceText.From(output, Encoding.UTF8));
+            }
+            catch (ScriptRuntimeException ex)
+            {
+                var msg = ex.OriginalMessage;
+                var span = ex.Span;
+
+                var text = TextSpan.FromBounds(span.Start.Offset, span.End.Offset);
+                var line = new LinePositionSpan(new LinePosition(span.Start.Line, span.Start.Column),
+                    new LinePosition(span.End.Line, span.End.Column));
+                
+                var location = Location.Create(span.FileName, text, line);
+                var diagnostic = Diagnostic.Create(ScirbanParseError, location, msg);
+
+                arg1.ReportDiagnostic(diagnostic);
             }
             catch (Exception ex)
             {
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine("// Error while rendering template:");
-                sb.AppendLine($"// {ex.Message}");
-                output = sb.ToString();
-            }
+                var location = Location.Create(foundFile.filePath, default, default);
+                var diagnostic = Diagnostic.Create(ScirbanParseError, location, ex.Message);
 
-            
-            arg1.AddSource($"{arg2.Left.Name}_{name}.g.cs", SourceText.From(output, Encoding.UTF8));
+                arg1.ReportDiagnostic(diagnostic);
+            }
         }
     }
 
     private static TemplateContext GetTemplateContext(
         IType typeInfo,
-        ImmutableArray<(string fileName, string template)> files)
+        ImmutableArray<(string fileName, string filePath, string template)> files)
     {
         var scriptObject = new ScriptObject();
         scriptObject.Import(new

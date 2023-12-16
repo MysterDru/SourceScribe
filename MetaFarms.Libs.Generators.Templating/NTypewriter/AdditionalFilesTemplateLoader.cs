@@ -7,11 +7,14 @@ using Scriban.Runtime;
 
 namespace MetaFarms.Libs.Generators.Templating.NTypewriter;
 
+/// <summary>
+/// Implementation of <see cref="ITemplateLoader"/> for scriban that will load include templates from the current AdditionalFilesProvider.
+/// </summary>
 internal class AdditionalFilesTemplateLoader : ITemplateLoader
 {
-    private readonly ImmutableArray<(string fileName, string template)> _files;
+    private readonly ImmutableArray<(string fileName, string filePath, string template)> _files;
 
-    public AdditionalFilesTemplateLoader(ImmutableArray<(string fileName, string template)> files)
+    public AdditionalFilesTemplateLoader(ImmutableArray<(string fileName, string filePath, string template)> files)
     {
         _files = files;
     }

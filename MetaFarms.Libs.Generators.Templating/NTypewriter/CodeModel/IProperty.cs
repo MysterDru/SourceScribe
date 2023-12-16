@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using NTypewriter.CodeModel.Roslyn;
 
 namespace NTypewriter.CodeModel
 {
@@ -43,5 +44,7 @@ namespace NTypewriter.CodeModel
         /// The set method of the property
         /// </summary>
         IMethod SetMethod { get; }
+        
+        List<IParameter> Parameters { get; }
     }
 }

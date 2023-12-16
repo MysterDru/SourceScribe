@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <AdditionalFiles Include="Templates\InterfaceGenerator.scriban" />
       <AdditionalFiles Include="Templates\_func_get_interface.scriban" />
       <None Remove="Templates\Test.scriban" />
       <AdditionalFiles Include="Templates\Composition\IMethodTwoImplementation.scriban" />

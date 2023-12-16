@@ -68,5 +68,7 @@ namespace NTypewriter.CodeModel.Roslyn
         {
             return FullName;
         }
+        
+        
     }
 }

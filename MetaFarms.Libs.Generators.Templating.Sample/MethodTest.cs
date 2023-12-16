@@ -5,7 +5,8 @@ namespace MetaFarms.Libs.Templating.Sample;
 
 [TypeMemberTemplate("IMethodOneImplementation.scriban")]
 [TypeMemberTemplate("IMethodTwoImplementation.scriban")]
-public partial class MethodTest : IHasMethodOne,
-                                  IHasMethodTwo<string>
+public partial class MethodTest 
+    // : IHasMethodOne,
+    //                               IHasMethodTwo<string>
 {
 }
