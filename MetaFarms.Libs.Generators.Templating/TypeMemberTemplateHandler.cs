@@ -19,14 +19,13 @@ namespace MetaFarms.Libs.Generators.Templating;
 
 internal static class TypeMemberTemplateHandler
 {
-    private static readonly DiagnosticDescriptor ScirbanParseError
-        = new("TEMPL001",                               // id
-            "Error parsing template",           // title
-            "{0}", // message
-            $"MetaFarms.Libs.Generators.Templating.NTypewriter",                          // category
-            DiagnosticSeverity.Error,
-            true);
-    
+    private static readonly DiagnosticDescriptor ScirbanParseError = new ("TMTH0001", // id
+        "Error parsing template", // title
+        "{0}", // message
+        $"MetaFarms.Libs.Generators.Templating", // category
+        DiagnosticSeverity.Error,
+        true);
+
     internal static void Register(IncrementalGeneratorInitializationContext context)
     {
         var typesProvider = context.SyntaxProvider.CreateSyntaxProvider((node, _) =>
@@ -36,10 +35,10 @@ internal static class TypeMemberTemplateHandler
                     .Any(a => a.Name.ToString()
                         .StartsWith(TypeMemberTemplateAttribute.Name));
             },
-            (ctx, _) => { return ctx.SemanticModel.GetDeclaredSymbol(ctx.Node) as INamedTypeSymbol; });
+            (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node) as INamedTypeSymbol);
 
         var files = context.AdditionalTextsProvider.Where(x => Path.GetFileName(x.Path)
-                .EndsWith(".scriban"))
+                .EndsWith(Constants.ScribanFileExtension))
             .Select((f, _) => (fileName: Path.GetFileName(f.Path), filePath: f.Path, content: f.GetText()
                 ?.ToString() ?? string.Empty))
             .Collect();
@@ -61,11 +60,6 @@ internal static class TypeMemberTemplateHandler
 
         IType typeInfo = Type.Create(typeSymbol);
 
-        if (typeInfo?.BareName == "GenerateInterfaceExample")
-        {
-            var prop = (typeInfo as Class).Properties.First(x => x.Name == "this[]");
-        }
-        
         if (typeInfo == null)
         {
             // todo: log error for null/notfound type
@@ -101,7 +95,7 @@ internal static class TypeMemberTemplateHandler
                 var text = TextSpan.FromBounds(span.Start.Offset, span.End.Offset);
                 var line = new LinePositionSpan(new LinePosition(span.Start.Line, span.Start.Column),
                     new LinePosition(span.End.Line, span.End.Column));
-                
+
                 var location = Location.Create(span.FileName, text, line);
                 var diagnostic = Diagnostic.Create(ScirbanParseError, location, msg);
 
@@ -121,6 +115,7 @@ internal static class TypeMemberTemplateHandler
         IType typeInfo,
         ImmutableArray<(string fileName, string filePath, string template)> files)
     {
+        // todo: this is probably the area that is the least performant. Is there a way to  cache the template context and script object for each type?
         var scriptObject = new ScriptObject();
         scriptObject.Import(new
         {
