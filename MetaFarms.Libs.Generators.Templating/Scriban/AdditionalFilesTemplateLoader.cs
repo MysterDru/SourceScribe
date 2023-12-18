@@ -5,7 +5,7 @@ using Scriban;
 using Scriban.Parsing;
 using Scriban.Runtime;
 
-namespace MetaFarms.Libs.Generators.Templating.NTypewriter;
+namespace MetaFarms.Libs.Generators.Templating.Scriban;
 
 /// <summary>
 /// Implementation of <see cref="ITemplateLoader"/> for scriban that will load include templates from the current AdditionalFilesProvider.

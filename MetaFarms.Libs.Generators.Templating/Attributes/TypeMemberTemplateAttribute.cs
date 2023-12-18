@@ -2,7 +2,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-namespace MetaFarms.Libs.Generators.Templating.NTypewriter.Attributes;
+namespace MetaFarms.Libs.Generators.Templating.Attributes;
 
 public static class TypeMemberTemplateAttribute
 {
@@ -12,7 +12,7 @@ public static class TypeMemberTemplateAttribute
 using System;
 namespace MetaFarms.Libs.Generators.Templating;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Struct, AllowMultiple = true, Inherited = false)]
-internal sealed class TypeMemberTemplateAttribute : System.Attribute
+internal sealed class TypeMemberTemplateAttribute : Attribute
 {
     public TypeMemberTemplateAttribute(string templateName)
     {
@@ -22,6 +22,10 @@ internal sealed class TypeMemberTemplateAttribute : System.Attribute
 
     public const string Name = "TypeMemberTemplate";
 
+    /// <summary>
+    /// Register the TypeMemberTemplateAttribute within the consuming assembly.
+    /// </summary>
+    /// <param name="context"></param>
     public static void Register(IncrementalGeneratorInitializationContext context)
     {
         context.RegisterPostInitializationOutput((ctx) =>

@@ -1,26 +1,24 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
+using MetaFarms.Libs.Generators.Templating.Attributes;
+using MetaFarms.Libs.Generators.Templating.Scriban;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using NTypewriter.CodeModel;
 using NTypewriter.CodeModel.Roslyn;
 using Scriban;
-using Scriban.Parsing;
 using Scriban.Runtime;
 using Scriban.Syntax;
 using Location = Microsoft.CodeAnalysis.Location;
 using Type = NTypewriter.CodeModel.Roslyn.Type;
 
-namespace MetaFarms.Libs.Generators.Templating.NTypewriter;
+namespace MetaFarms.Libs.Generators.Templating;
 
-public static class TypeMemberTemplateHandler
+internal static class TypeMemberTemplateHandler
 {
     private static readonly DiagnosticDescriptor ScirbanParseError
         = new("TEMPL001",                               // id
@@ -37,7 +35,7 @@ public static class TypeMemberTemplateHandler
                 return node is TypeDeclarationSyntax typeSyntax && typeSyntax.AttributeLists
                     .SelectMany(a => a.Attributes)
                     .Any(a => a.Name.ToString()
-                        .StartsWith(Attributes.TypeMemberTemplateAttribute.Name));
+                        .StartsWith(TypeMemberTemplateAttribute.Name));
             },
             (ctx, _) => { return ctx.SemanticModel.GetDeclaredSymbol(ctx.Node) as INamedTypeSymbol; });
 
@@ -60,7 +58,7 @@ public static class TypeMemberTemplateHandler
         var files = arg2.Right;
 
         var attributes = arg2.Left.GetAttributes()
-            .Where(x => x.AttributeClass?.Name.StartsWith(Attributes.TypeMemberTemplateAttribute.Name) == true);
+            .Where(x => x.AttributeClass?.Name.StartsWith(TypeMemberTemplateAttribute.Name) == true);
 
         IType typeInfo = Type.Create(typeSymbol);
 
