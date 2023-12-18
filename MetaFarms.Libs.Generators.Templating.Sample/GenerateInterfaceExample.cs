@@ -8,7 +8,7 @@ namespace MetaFarms.Libs.Templating.Sample;
 public delegate void E(object sender, object args);
 
 /// <summary>
-/// Class that demonstrates the generation of an interface
+/// Demonstrates the generation of an interface
 /// </summary>
 [TypeMemberTemplate("InterfaceGenerator.scriban")]
 public partial class GenerateInterfaceExample : IGenerateInterfaceExample

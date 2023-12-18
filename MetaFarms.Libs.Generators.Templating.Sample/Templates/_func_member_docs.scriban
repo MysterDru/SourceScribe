@@ -1,0 +1,15 @@
+{{~ func print_xml_docs(member)    
+    if(member.doc_comment != null) }}
+            
+        /// <summary>
+        /// {{ member.doc_comment.summary }}
+        /// </summary>
+        {{~ for param in member.doc_comment.params ~}}
+        /// <param name="{{ param.name }}">{{ param.value }}</param>
+        {{~ end ~}}
+        /// <returns>
+        /// {{ member.doc_comment.returns }}
+        /// </returns>
+        
+    {{- end
+end ~}}

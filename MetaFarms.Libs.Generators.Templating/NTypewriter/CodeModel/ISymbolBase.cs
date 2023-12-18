@@ -9,7 +9,7 @@ namespace NTypewriter.CodeModel
     /// </summary>
     public interface ISymbolBase
     {
-        /// <summary>
+        /// <summary>   
         /// All attributes declared on the symbol.
         /// </summary>
         IEnumerable<IAttribute> Attributes { get; }

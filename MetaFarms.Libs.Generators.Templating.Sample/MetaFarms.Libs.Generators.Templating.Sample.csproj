@@ -17,6 +17,7 @@
     <ItemGroup>
       <AdditionalFiles Include="Templates\InterfaceGenerator.scriban" />
       <AdditionalFiles Include="Templates\_func_get_interface.scriban" />
+      <AdditionalFiles Include="Templates\_func_member_docs.scriban" />
       <None Remove="Templates\Test.scriban" />
       <AdditionalFiles Include="Templates\Composition\IMethodTwoImplementation.scriban" />
       <AdditionalFiles Include="Templates\Composition\IMethodOneImplementation.scriban" />
