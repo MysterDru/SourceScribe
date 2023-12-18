@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace NTypewriter.CodeModel.Traits
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Abstractions.Traits
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public interface IHaveProperties

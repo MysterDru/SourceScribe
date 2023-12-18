@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace NTypewriter.CodeModel
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Abstractions
 {
     /// <summary>
     /// Represents a method parameter.

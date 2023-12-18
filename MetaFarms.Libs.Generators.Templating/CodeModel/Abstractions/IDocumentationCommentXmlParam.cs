@@ -1,4 +1,4 @@
-﻿namespace NTypewriter.CodeModel
+﻿namespace MetaFarms.Libs.Generators.Templating.CodeModel.Abstractions
 {
     /// <summary>
     /// Represents a documentation XML param tag.

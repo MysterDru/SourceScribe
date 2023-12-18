@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using NTypewriter.CodeModel.Roslyn;
 
-namespace NTypewriter.CodeModel
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Abstractions
 {
     /// <summary>
     /// Represents a property.

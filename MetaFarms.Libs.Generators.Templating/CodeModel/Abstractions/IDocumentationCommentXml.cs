@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace NTypewriter.CodeModel
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Abstractions
 {
     /// <summary>
     /// Represents a documentation XML comment.

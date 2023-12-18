@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace NTypewriter.CodeModel.Roslyn
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn
 {
     internal sealed class AttributeArgument : IAttributeArgument
     {
@@ -9,7 +9,7 @@ namespace NTypewriter.CodeModel.Roslyn
 
         public bool IsFromConstructor { get; private set; }
         public string Name { get; private set; }
-        public IType Type => NTypewriter.CodeModel.Roslyn.Type.Create(typedConstant.Type);
+        public IType Type => MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn.Type.Create(typedConstant.Type);
         public object Value => TypedConstant.Create(typedConstant);
 
         public AttributeArgument(Microsoft.CodeAnalysis.TypedConstant typedConstant, bool isFromConstructor, string name)

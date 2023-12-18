@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 
-namespace NTypewriter.CodeModel.Roslyn
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn
 {
     internal sealed class Enum : NamedType, IEnum
     {

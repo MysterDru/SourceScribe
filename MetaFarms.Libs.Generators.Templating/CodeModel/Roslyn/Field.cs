@@ -1,12 +1,12 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace NTypewriter.CodeModel.Roslyn
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn
 {
     internal sealed class Field : SymbolBase, IField
     {
         private readonly IFieldSymbol symbol;      
 
-        public IType Type => NTypewriter.CodeModel.Roslyn.Type.Create(symbol.Type, this);
+        public IType Type => MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn.Type.Create(symbol.Type, this);
         public bool IsConst => symbol.IsConst;
         public bool IsReadOnly => symbol.IsReadOnly;
         public bool HasConstantValue => symbol.HasConstantValue;

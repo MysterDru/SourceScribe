@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 
-namespace NTypewriter.CodeModel.Roslyn
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn
 {
     internal sealed class Delegate : NamedType, IDelegate
     {
@@ -9,7 +9,7 @@ namespace NTypewriter.CodeModel.Roslyn
         private readonly IMethodSymbol methodSymbol;
 
         public IEnumerable<IParameter> Parameters => ParameterCollection.Create(methodSymbol);
-        public IType ReturnType => NTypewriter.CodeModel.Roslyn.Type.Create(methodSymbol.ReturnType);
+        public IType ReturnType => MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn.Type.Create(methodSymbol.ReturnType);
      
 
         private Delegate(INamedTypeSymbol symbol) : base(symbol)

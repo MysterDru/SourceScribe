@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace NTypewriter.CodeModel.Roslyn
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn
 {
     internal sealed class LocationCollection : List<ILocation>
     {

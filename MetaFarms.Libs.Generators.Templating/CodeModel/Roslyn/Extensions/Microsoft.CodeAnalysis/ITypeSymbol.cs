@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using NTypewriter.CodeModel.Roslyn;
+using MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn;
 
 namespace Microsoft.CodeAnalysis
 {

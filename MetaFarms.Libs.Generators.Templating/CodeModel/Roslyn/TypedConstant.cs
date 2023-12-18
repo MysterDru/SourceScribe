@@ -1,13 +1,13 @@
 ﻿using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace NTypewriter.CodeModel.Roslyn
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn
 {
     internal sealed class TypedConstant : ITypedConstant
     {
         private readonly Microsoft.CodeAnalysis.TypedConstant typedConstant;
 
-        public IType Type => NTypewriter.CodeModel.Roslyn.Type.Create(typedConstant.Type);
+        public IType Type => MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn.Type.Create(typedConstant.Type);
         public object Value => typedConstant.Value;
 
 

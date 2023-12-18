@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
-using NTypewriter.CodeModel.Roslyn.Internals;
+using MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn.Internals;
 
-namespace NTypewriter.CodeModel.Roslyn
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn
 {
     public sealed class CodeModel : ICodeModel
     {

@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace NTypewriter.CodeModel.Roslyn
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn
 {
     internal sealed class EventCollection : List<IEvent>
     {

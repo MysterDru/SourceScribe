@@ -2,14 +2,14 @@
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace NTypewriter.CodeModel.Roslyn
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn
 {
     internal class Type : SymbolBase, IType, ITypeReferencedByMember
     {
         private readonly ITypeSymbol symbol;
         private ISymbolBase parent;
 
-        public IType BaseType => NTypewriter.CodeModel.Roslyn.Type.CreateBaseType(symbol.BaseType);
+        public IType BaseType => MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn.Type.CreateBaseType(symbol.BaseType);
         public bool IsAnonymousType => symbol.IsAnonymousType;
         public bool IsEnumerable => symbol.AllInterfaces.Any(x => x.ToString() == "System.Collections.IEnumerable") || this.FullName == "System.Collections.IEnumerable";
         public bool IsDelegate => symbol.TypeKind == TypeKind.Delegate;
@@ -51,7 +51,7 @@ namespace NTypewriter.CodeModel.Roslyn
         public bool IsValueType => symbol.IsValueType;
         public IEnumerable<IInterface> Interfaces => InterfaceCollection.Create(symbol.Interfaces);
         public IEnumerable<IInterface> AllInterfaces => InterfaceCollection.Create(symbol.AllInterfaces);
-        public IType ArrayType => symbol is IArrayTypeSymbol arraySymbol ? NTypewriter.CodeModel.Roslyn.Type.Create(arraySymbol.ElementType) : null;
+        public IType ArrayType => symbol is IArrayTypeSymbol arraySymbol ? MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn.Type.Create(arraySymbol.ElementType) : null;
         public IEnumerable<IType> TypeArguments => TypeCollection.CreateTypeArguments(symbol);
         public override string Name
         {

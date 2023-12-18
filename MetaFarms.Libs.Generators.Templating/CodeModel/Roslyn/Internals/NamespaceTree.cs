@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace NTypewriter.CodeModel.Roslyn.Internals
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn.Internals
 {
     internal sealed class NamespaceTree
     {

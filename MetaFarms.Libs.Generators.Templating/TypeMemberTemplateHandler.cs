@@ -8,13 +8,12 @@ using MetaFarms.Libs.Generators.Templating.Scriban;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using NTypewriter.CodeModel;
-using NTypewriter.CodeModel.Roslyn;
+using MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn;
 using Scriban;
 using Scriban.Runtime;
 using Scriban.Syntax;
 using Location = Microsoft.CodeAnalysis.Location;
-using Type = NTypewriter.CodeModel.Roslyn.Type;
+using Type = MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn.Type;
 
 namespace MetaFarms.Libs.Generators.Templating;
 

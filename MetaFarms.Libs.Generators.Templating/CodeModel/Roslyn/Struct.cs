@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 
-namespace NTypewriter.CodeModel.Roslyn
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn
 {
     [DebuggerDisplay("Struct, Name = {Name}")]
     internal sealed class Struct : NamedType, IStruct

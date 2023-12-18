@@ -1,7 +1,7 @@
-﻿using NTypewriter.CodeModel.Traits;
+﻿using MetaFarms.Libs.Generators.Templating.CodeModel.Abstractions.Traits;
 using System.Collections.Generic;
 
-namespace NTypewriter.CodeModel
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Abstractions
 {
     /// <summary>
     /// Represents a class.

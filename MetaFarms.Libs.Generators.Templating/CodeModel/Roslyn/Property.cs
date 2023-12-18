@@ -3,13 +3,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.CodeAnalysis;
 
-namespace NTypewriter.CodeModel.Roslyn
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn
 {
     internal sealed class Property : SymbolBase, IProperty
     {
         private readonly IPropertySymbol symbol;
 
-        public IType Type => NTypewriter.CodeModel.Roslyn.Type.Create(symbol.Type, this);
+        public IType Type => MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn.Type.Create(symbol.Type, this);
 
         public IMethod GetMethod => symbol.GetMethod != null ? Method.Create(symbol.GetMethod) : null;
 

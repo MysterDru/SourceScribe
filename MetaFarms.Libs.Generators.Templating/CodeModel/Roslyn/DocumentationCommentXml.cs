@@ -5,7 +5,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.CodeAnalysis;
 
-namespace NTypewriter.CodeModel.Roslyn
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn
 {
     internal sealed class DocumentationCommentXml : IDocumentationCommentXml
     {      

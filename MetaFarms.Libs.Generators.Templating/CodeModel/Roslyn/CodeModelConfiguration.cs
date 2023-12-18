@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NTypewriter.CodeModel.Roslyn
+namespace MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn
 {
     public class CodeModelConfiguration
     {
