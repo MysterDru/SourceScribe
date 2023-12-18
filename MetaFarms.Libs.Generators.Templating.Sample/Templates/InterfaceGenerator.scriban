@@ -31,4 +31,29 @@ public partial interface I{{ member.name }}
             {{~ end ~}}
         }
     {{ end }}
+    
+    {{ for method in member.methods }}
+    
+        // {{ method.name }}
+        
+        {{ if method.return_type.full_name == 'System.Void' -}}
+            void
+        {{- else ~}}
+            {{- method.return_type.full_name -}}
+        {{~ end }}
+         {{ method.bare_name -}}        
+        (
+            {{- for parameter in method.parameters -}}
+                {{ if for.index > 0 }}, {{ end }}
+                {{- parameter.type.name }} {{ parameter.name -}}
+            {{- end -}}
+        );
+    {{ end }}
+    
+    {{ for event in member.events }}
+        // {{ event.name }}
+        
+        event {{ event.type.name }} {{ event.bare_name }};
+    
+    {{ end }}
 }
