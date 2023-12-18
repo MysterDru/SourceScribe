@@ -21,16 +21,15 @@ internal sealed class TypeMemberTemplateAttribute : Attribute
 ";
 
     public const string Name = "TypeMemberTemplate";
+    
+    public const string QualifiedName = "MetaFarms.Libs.Generators.Templating.TypeMemberTemplateAttribute";
 
     /// <summary>
     /// Register the TypeMemberTemplateAttribute within the consuming assembly.
     /// </summary>
     /// <param name="context"></param>
-    public static void Register(IncrementalGeneratorInitializationContext context)
+    public static void AddSource(IncrementalGeneratorPostInitializationContext context)
     {
-        context.RegisterPostInitializationOutput((ctx) =>
-        {
-            ctx.AddSource($"{ClassName}.g.cs", SourceText.From(AttributeSourceCode, Encoding.UTF8));
-        });
+        context.AddSource($"{ClassName}.g.cs", SourceText.From(AttributeSourceCode, Encoding.UTF8));
     }
 }

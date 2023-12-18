@@ -10,7 +10,11 @@ public class TemplatingIncrementalGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        Attributes.TypeMemberTemplateAttribute.Register(context);
+        context.RegisterPostInitializationOutput(ctx =>
+        {
+            Attributes.TypeMemberTemplateAttribute.AddSource(ctx);
+            Attributes.RegisterTypeMemberTemplateAttribute.AddSource(ctx);
+        });
 
         TypeMemberTemplateHandler.Register(context);
     }
