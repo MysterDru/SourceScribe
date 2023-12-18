@@ -6,13 +6,13 @@ namespace MetaFarms.Libs.Generators.Templating.Attributes;
 
 public static class TypeMemberTemplateAttribute
 {
-    private const string ClassName = "TypeMemberTemplateAttribute";
+    public const string ClassName = "TypeMemberTemplateAttribute";
 
     private const string AttributeSourceCode = @"
 using System;
 namespace MetaFarms.Libs.Generators.Templating;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Struct, AllowMultiple = true, Inherited = false)]
-internal sealed class TypeMemberTemplateAttribute : Attribute
+internal class TypeMemberTemplateAttribute : Attribute
 {
     public TypeMemberTemplateAttribute(string templateName)
     {

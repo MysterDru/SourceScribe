@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MetaFarms.Libs.Generators.Templating;
+using MetaFarms.Libs.Templating.Sample.Attributes;
 
 namespace MetaFarms.Libs.Templating.Sample;
 
@@ -10,13 +11,13 @@ public delegate void E(object sender, object args);
 /// <summary>
 /// Demonstrates the generation of an interface
 /// </summary>
-[TypeMemberTemplate("InterfaceGenerator.scriban")]
-public partial class GenerateInterfaceExample : IGenerateInterfaceExample
+[GenerateInterface]
+public partial class GenerateInterfaceExample
 {
     private List<string> _foo = new ();
 
     public event E EventExample;
-    
+
     /// <summary>
     /// Indexer with single arg
     /// </summary>
@@ -26,7 +27,7 @@ public partial class GenerateInterfaceExample : IGenerateInterfaceExample
         get => _foo[i];
         set => _foo[i] = value;
     }
-    
+
     /// <summary>
     /// indexer with multiple args
     /// </summary>
@@ -37,27 +38,27 @@ public partial class GenerateInterfaceExample : IGenerateInterfaceExample
         get => _foo[i];
         set => _foo[i] = value;
     }
-    
+
     /// <summary>
     /// String property
     /// </summary>
     public string Foo { get; set; }
-    
+
     /// <summary>
     /// Get and set, <see cref="Nullable{T}"/>
     /// </summary>
     public int? Bar { get; set; }
-    
+
     /// <summary>
     /// Getter only
     /// </summary>
     public object Fizz { get; }
-    
+
     /// <summary>
     /// Private getter, public setter
     /// </summary>
     public string Buzz { private get; set; }
- 
+
     /// <summary>
     /// so something, no params
     /// </summary>
@@ -73,7 +74,7 @@ public partial class GenerateInterfaceExample : IGenerateInterfaceExample
     {
         return Task.CompletedTask;
     }
-    
+
     /// <summary>
     /// Do something
     /// </summary>

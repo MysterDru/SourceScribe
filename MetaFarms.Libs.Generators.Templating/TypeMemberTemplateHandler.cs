@@ -1,15 +1,19 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Threading;
 using MetaFarms.Libs.Generators.Templating.Attributes;
 using MetaFarms.Libs.Generators.Templating.Scriban;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using MetaFarms.Libs.Generators.Templating.CodeModel.Roslyn;
+using MetaFarms.Libs.Generators.Templating.Extensions;
 using Scriban;
 using Scriban.Runtime;
 using Scriban.Syntax;
@@ -29,29 +33,6 @@ internal static class TypeMemberTemplateHandler
 
     internal static void Register(IncrementalGeneratorInitializationContext context)
     {
-        var registerAttributesProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
-                RegisterTypeMemberTemplateAttribute.QualifiedName,
-                (node, _) =>
-                {
-                    if (node is ClassDeclarationSyntax classDeclarationSyntax)
-                    {
-                        return classDeclarationSyntax.BaseList.Types.Any(t => t.Type.ToString() == "Attribute");
-                    }
-
-                    return false;
-                },
-                (node, _) =>
-                {
-                    var args = node.Attributes.First(x =>
-                            x.AttributeClass?.MetadataName == RegisterTypeMemberTemplateAttribute.QualifiedName)
-                        .ConstructorArguments;
-
-                    return (args[0].Value, args[1].Value);
-                })
-            .Collect();
-
-        // get types that have the TypeMemberTemplateAttribute specified
-        
         var typesProvider = GetTypesProvider(context);
         var files = GetAdditionalFilesProvider(context);
 
@@ -60,18 +41,96 @@ internal static class TypeMemberTemplateHandler
         context.RegisterSourceOutput(combined, GenerateFromTypeTemplateAttributes);
     }
 
-    private static IncrementalValuesProvider<INamedTypeSymbol> GetTypesProvider(
+    private static void HandleTypesWithFilesProvider(
+        SourceProductionContext arg1,
+        ((INamedTypeSymbol Left, ImmutableArray<INamedTypeSymbol> Right) Left,
+            ImmutableArray<(string fileName, string filePath, string content)> Right) arg2)
+    {
+    }
+
+    private static IncrementalValuesProvider<(INamedTypeSymbol, string[])> GetTypesProvider(
         IncrementalGeneratorInitializationContext context)
     {
-        var typesProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
-            TypeMemberTemplateAttribute.QualifiedName,
-            (node, _) => node is TypeDeclarationSyntax,
-            (node, _) => node.SemanticModel.GetDeclaredSymbol(node.TargetNode) as INamedTypeSymbol);
+        var typesProvider = context.SyntaxProvider.CreateSyntaxProvider(MayHaveTargetMemberTemplateAttribute,
+                (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node) as INamedTypeSymbol)
+            .Where(x =>
+            {
+                bool hasAttribute = HasTypeMemberTemplateAttribute(x)
+                    .Any() || x.GetAttributes()
+                    .SelectMany(a => HasTypeMemberTemplateAttribute(a.AttributeClass))
+                    .Any();
+
+                return hasAttribute;
+            })
+            .Select((symbol, _) => (symbol, GetTemplateForSymbol(symbol)));
 
         return typesProvider;
     }
 
-    private static IncrementalValueProvider<ImmutableArray<(string fileName, string filePath, string content)>> GetAdditionalFilesProvider(IncrementalGeneratorInitializationContext context)
+    private static string[] GetTemplateForSymbol(INamedTypeSymbol symbol)
+    {
+        return HasTypeMemberTemplateAttribute(symbol)
+            .Union(symbol.GetAttributes().SelectMany(a => HasTypeMemberTemplateAttribute(a.AttributeClass)))
+            .Select(a => a.ConstructorArguments[0]
+                .Value.ToString())
+            .ToArray();
+    }
+
+    private static IEnumerable<AttributeData> HasTypeMemberTemplateAttribute(INamedTypeSymbol symbol)
+    {
+        if (symbol != null)
+        {
+            var attributes = symbol.GetAttributes();
+
+            foreach (var attribute in attributes)
+            {
+                var attributeName = attribute.AttributeClass?.Name;
+
+                if (attributeName != null && (attributeName.EndsWith(TypeMemberTemplateAttribute.Name) ||
+                                              attributeName.EndsWith(TypeMemberTemplateAttribute.ClassName)))
+                {
+                    yield return attribute;
+                }
+            }
+        }
+    }
+
+    private static bool MayHaveTargetMemberTemplateAttribute(SyntaxNode node, CancellationToken cancellationToken)
+    {
+        if (node is TypeDeclarationSyntax typeDeclarationSyntax)
+        {
+            var hasAttributeBaseType = typeDeclarationSyntax.BaseList?.Types.Where(x => x.Type is NameSyntax)
+                .Select(t => t.Type as NameSyntax)
+                .Any(t =>
+                {
+                    if (t is IdentifierNameSyntax identifierNameSyntax)
+                    {
+                        return identifierNameSyntax.Identifier.Text.EndsWith("Attribute");
+                    }
+
+                    if (t is QualifiedNameSyntax qualifiedNameSyntax)
+                    {
+                        return qualifiedNameSyntax.Right.Identifier.Text.EndsWith("Attribute");
+                    }
+
+                    return false;
+                }) ?? false;
+
+            if (hasAttributeBaseType)
+            {
+                return false;
+            }
+
+            var attributes = typeDeclarationSyntax.AttributeLists.SelectMany(a => a.Attributes);
+
+            return attributes.Any();
+        }
+
+        return false;
+    }
+
+    private static IncrementalValueProvider<ImmutableArray<(string fileName, string filePath, string content)>>
+        GetAdditionalFilesProvider(IncrementalGeneratorInitializationContext context)
     {
         var files = context.AdditionalTextsProvider.Where(x => Path.GetFileName(x.Path)
                 .EndsWith(Constants.ScribanFileExtension))
@@ -81,16 +140,14 @@ internal static class TypeMemberTemplateHandler
 
         return files;
     }
-    
+
     private static void GenerateFromTypeTemplateAttributes(
         SourceProductionContext arg1,
-        (INamedTypeSymbol Left, ImmutableArray<(string fileName, string filePath, string template)> Right) arg2)
+        ((INamedTypeSymbol symbol, string[] templates) Left,
+            ImmutableArray<(string fileName, string filePath, string template)> Right) arg2)
     {
-        var typeSymbol = arg2.Left;
+        var typeSymbol = arg2.Left.symbol;
         var files = arg2.Right;
-
-        var attributes = arg2.Left.GetAttributes()
-            .Where(x => x.AttributeClass?.Name.StartsWith(TypeMemberTemplateAttribute.Name) == true);
 
         IType typeInfo = Type.Create(typeSymbol);
 
@@ -100,10 +157,8 @@ internal static class TypeMemberTemplateHandler
             return;
         }
 
-        foreach (var attribute in attributes)
+        foreach (var templateName in arg2.Left.templates)
         {
-            var templateName = attribute.ConstructorArguments.ElementAt(0)
-                .Value?.ToString();
             var foundFile = files.FirstOrDefault(x => Path.GetFileName(x.fileName) == templateName);
 
             if (foundFile.template == null)
@@ -119,7 +174,7 @@ internal static class TypeMemberTemplateHandler
                 var context = GetTemplateContext(typeInfo, files);
                 var output = template.Render(context);
 
-                arg1.AddSource($"{arg2.Left.Name}_{name}.g.cs", SourceText.From(output, Encoding.UTF8));
+                arg1.AddSource($"{typeSymbol.Name}_{name}.g.cs", SourceText.From(output, Encoding.UTF8));
             }
             catch (ScriptRuntimeException ex)
             {
