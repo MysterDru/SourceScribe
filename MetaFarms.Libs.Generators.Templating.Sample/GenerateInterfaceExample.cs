@@ -5,13 +5,17 @@ using MetaFarms.Libs.Generators.Templating;
 
 namespace MetaFarms.Libs.Templating.Sample;
 
+public delegate void E(object sender, object args);
+
 /// <summary>
 /// Class that demonstrates the generation of an interface
 /// </summary>
 [TypeMemberTemplate("InterfaceGenerator.scriban")]
 public partial class GenerateInterfaceExample : IGenerateInterfaceExample
 {
-    private List<string> _foo = new (); 
+    private List<string> _foo = new ();
+
+    public event E EventExample;
     
     /// <summary>
     /// Indexer with single arg
