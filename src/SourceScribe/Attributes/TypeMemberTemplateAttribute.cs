@@ -12,7 +12,7 @@ public static class TypeMemberTemplateAttribute
 using System;
 namespace SourceScribe;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Struct, AllowMultiple = true, Inherited = false)]
-internal class TypeMemberTemplateAttribute : Attribute
+internal sealed class TypeMemberTemplateAttribute : Attribute
 {
     public TypeMemberTemplateAttribute(string templateName)
     {
