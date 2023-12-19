@@ -16,10 +16,10 @@ namespace SourceScribe;
 /// Provides a way to register a template to a custom attribute. Allows for better re-usability of templates in the consuming project.
 /// An attribute registered in this manner can be used in place of [TypeMemberTemplateAttribute(""SomeTemplate.scriban"")].
 /// </summary>
-[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 internal sealed class RegisterTypeMemberTemplateAttribute : System.Attribute
 {
-    public RegisterTypeMemberTemplateAttribute(Type customAttributeType, string templateName)
+    public RegisterTypeMemberTemplateAttribute(string templateName)
     {
     }
 }
@@ -35,6 +35,6 @@ internal sealed class RegisterTypeMemberTemplateAttribute : System.Attribute
     /// <param name="context"></param>
     public static void AddSource(IncrementalGeneratorPostInitializationContext context)
     {
-        // context.AddSource($"{ClassName}.g.cs", SourceText.From(AttributeSourceCode, Encoding.UTF8));
+        context.AddSource($"{ClassName}.g.cs", SourceText.From(AttributeSourceCode, Encoding.UTF8));
     }
 }
