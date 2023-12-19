@@ -51,9 +51,9 @@ internal static class TypeMemberTemplateHandler
                 (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node) as INamedTypeSymbol)
             .Where(x =>
             {
-                bool hasAttribute = GetTypeMemberTemplateAttributes(x)
+                bool hasAttribute = GetTypeMemberTemplateAttributes(x, TypeMemberTemplateAttribute.Name, TypeMemberTemplateAttribute.ClassName)
                     .Any() || x.GetAttributes()
-                    .SelectMany(a => GetTypeMemberTemplateAttributes(a.AttributeClass))
+                    .SelectMany(a => GetTypeMemberTemplateAttributes(a.AttributeClass, RegisterTypeMemberTemplateAttribute.Name, RegisterTypeMemberTemplateAttribute.ClassName))
                     .Any();
 
                 return hasAttribute;
@@ -66,9 +66,9 @@ internal static class TypeMemberTemplateHandler
 
     private static IEnumerable<string> GetTemplatesForTypeSymbol(INamedTypeSymbol symbol)
     {
-        return GetTypeMemberTemplateAttributes(symbol)
+        return GetTypeMemberTemplateAttributes(symbol, TypeMemberTemplateAttribute.Name, TypeMemberTemplateAttribute.ClassName)
             .Union(symbol.GetAttributes()
-                .SelectMany(a => GetTypeMemberTemplateAttributes(a.AttributeClass)))
+                .SelectMany(a => GetTypeMemberTemplateAttributes(a.AttributeClass, RegisterTypeMemberTemplateAttribute.Name, RegisterTypeMemberTemplateAttribute.ClassName)))
             .Select(a => a.ConstructorArguments.ElementAt(0)
                 .Value!.ToString());
     }
@@ -77,8 +77,10 @@ internal static class TypeMemberTemplateHandler
     /// Returns all attributes from a <see cref="INamedTypeSymbol"/>
     /// </summary>
     /// <param name="symbol"></param>
+    /// <param name="name"></param>
+    /// <param name="className"></param>
     /// <returns></returns>
-    private static IEnumerable<AttributeData> GetTypeMemberTemplateAttributes(INamedTypeSymbol symbol)
+    private static IEnumerable<AttributeData> GetTypeMemberTemplateAttributes(INamedTypeSymbol symbol, string name, string className)
     {
         if (symbol != null)
         {
@@ -89,8 +91,8 @@ internal static class TypeMemberTemplateHandler
             {
                 var attributeName = attribute.AttributeClass?.Name;
 
-                if (attributeName != null && (attributeName.EndsWith(TypeMemberTemplateAttribute.Name) ||
-                                              attributeName.EndsWith(TypeMemberTemplateAttribute.ClassName)))
+                if (attributeName != null && (attributeName.EndsWith(name) ||
+                                              attributeName.EndsWith(className)))
                 {
                     yield return attribute;
                 }
@@ -138,7 +140,7 @@ internal static class TypeMemberTemplateHandler
             return false;
         }
 
-        // if has at least 1 attribute, than is a candiate
+        // if has at least 1 attribute, than is a candidate
         return typeDeclarationSyntax.AttributeLists.SelectMany(a => a.Attributes)
             .Any();
     }

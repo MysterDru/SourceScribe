@@ -6,8 +6,6 @@ namespace SourceScribe.Attributes;
 
 public static class RegisterTypeMemberTemplateAttribute
 {
-    private const string ClassName = "RegisterTypeMemberTemplateAttribute";
-
     private const string AttributeSourceCode = @"
 using System;
 namespace SourceScribe;
@@ -15,6 +13,7 @@ namespace SourceScribe;
 /// <summary>
 /// Provides a way to register a template to a custom attribute. Allows for better re-usability of templates in the consuming project.
 /// An attribute registered in this manner can be used in place of [TypeMemberTemplateAttribute(""SomeTemplate.scriban"")].
+/// This attribute will be ignored if it is added to a class that does not extend from <see cref=""System.Attribute""/>.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 internal sealed class RegisterTypeMemberTemplateAttribute : System.Attribute
@@ -24,6 +23,8 @@ internal sealed class RegisterTypeMemberTemplateAttribute : System.Attribute
     }
 }
 ";
+    
+    public const string ClassName = "RegisterTypeMemberTemplateAttribute";
 
     public const string Name = "RegisterTypeMemberTemplate";
 
