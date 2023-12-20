@@ -26,6 +26,12 @@
         
         <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\..\README.md" Pack="true" PackagePath="\">
+        <Link>README.md</Link>
+      </None>
+    </ItemGroup>
     <!-- support loading scriban dependencies into source directly -->
     <PropertyGroup>
         <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
@@ -43,7 +49,7 @@
 
     <!-- Nuget Package Properties -->
     <PropertyGroup>
-        <PackageId>SourceScribe</PackageId>
+        <PackageId>SourceScribe.alpha</PackageId>
         <Authors>MysterDru</Authors>
         <Product>SourceScribe</Product>
         <Description>SourceScribe is a Roslyn Source Generator Project that allows generating compiled code from text template files. No need to write your own source generators for code generation!</Description>
@@ -55,5 +61,7 @@
         <IncludeSource>true</IncludeSource>
         <NoPackageAnalysis>true</NoPackageAnalysis>
         <IncludeBuildOutput>false</IncludeBuildOutput>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <VersionPrefix>0.0.1</VersionPrefix>
     </PropertyGroup>
 </Project>
