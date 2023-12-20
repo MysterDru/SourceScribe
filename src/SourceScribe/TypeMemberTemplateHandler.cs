@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using SourceScribe.Attributes;
 using SourceScribe.Scriban;
@@ -21,12 +22,14 @@ namespace SourceScribe;
 
 internal static class TypeMemberTemplateHandler
 {
-    private static readonly DiagnosticDescriptor ScirbanParseError = new("TMTH0001", // id
-        "Error parsing template", // title
-        "{0}", // message
-        $"SourceScribe", // category
-        DiagnosticSeverity.Error,
-        true);
+    // todo: need to enable release tracking for rules:
+    // https://github.com/dotnet/roslyn-analyzers/blob/main/src/Microsoft.CodeAnalysis.Analyzers/ReleaseTrackingAnalyzers.Help.md
+    // private static readonly DiagnosticDescriptor ScirbanParseError = new("TMTH0001", // id
+    //     "Error parsing template", // title
+    //     "{0}", // message
+    //     $"SourceScribe", // category
+    //     DiagnosticSeverity.Error,
+    //     true);
 
     internal static void Register(IncrementalGeneratorInitializationContext context)
     {
@@ -209,26 +212,44 @@ internal static class TypeMemberTemplateHandler
                 sourceProductionContext.AddSource($"{typeSymbol.Name}_{name}.g.cs",
                     SourceText.From(output, Encoding.UTF8));
             }
-            catch (ScriptRuntimeException ex)
-            {
-                var msg = ex.OriginalMessage;
-                var span = ex.Span;
-
-                var text = TextSpan.FromBounds(span.Start.Offset, span.End.Offset);
-                var line = new LinePositionSpan(new LinePosition(span.Start.Line, span.Start.Column),
-                    new LinePosition(span.End.Line, span.End.Column));
-
-                var location = Location.Create(span.FileName, text, line);
-                var diagnostic = Diagnostic.Create(ScirbanParseError, location, msg);
-
-                sourceProductionContext.ReportDiagnostic(diagnostic);
-            }
             catch (Exception ex)
             {
-                var location = Location.Create(foundFile.filePath, default, default);
-                var diagnostic = Diagnostic.Create(ScirbanParseError, location, ex.Message);
+                var classFriendlyFileName = new Regex("[^a-zA-Z0-9 -]")
+                    .Replace(name, string.Empty);
+                
+                // todo: report this as a diagnostic, need to enable release tracking for rules:
+                // see: // https://github.com/dotnet/roslyn-analyzers/blob/main/src/Microsoft.CodeAnalysis.Analyzers/ReleaseTrackingAnalyzers.Help.md
+                //
+                // for now, report error information as comments in the source file
+                string message = "Error generating file";
+                string additionalText = string.Empty;
+                if (ex is ScriptRuntimeException scriptEx)
+                {
+                    message = scriptEx.OriginalMessage;
+                    
+                    var additional = new StringBuilder();
+                    additional.AppendLine("//");
+                    additional.AppendLine("// Script Message:");
+                    additional.AppendLine($"// {scriptEx.OriginalMessage}");
+                    additional.AppendLine("//");
+                    additional.AppendLine($"// File: {foundFile.filePath}");
+                    additional.AppendLine($"//       {scriptEx.Span.ToStringSimple()}");
 
-                sourceProductionContext.ReportDiagnostic(diagnostic);
+                    additionalText = additional.ToString();
+                }
+                
+                StringBuilder sb = new();
+                sb.AppendLine($"public static class {typeSymbol.Name}_{classFriendlyFileName}");
+                sb.AppendLine("{");
+                sb.AppendLine($"#error Failed to generate file: {message}");
+                sb.AppendLine($"// Exception: {ex.GetType()}");
+                sb.AppendLine($"// {ex.Message}");
+                sb.AppendLine("//");
+                sb.AppendLine(additionalText);
+                sb.AppendLine("}");
+                
+                sourceProductionContext.AddSource($"{typeSymbol.Name}_{name}.g.cs",
+                    SourceText.From(sb.ToString(), Encoding.UTF8));
             }
         }
     }

@@ -7,7 +7,7 @@ partial class {{ member.name }} : I{{member.name }}
 {
 }
 
-{{ member | print_xml_docs }}
+{{ member | print_xml_doc }}
 public partial interface I{{ member.name }}
 {   
     {{~ for event in member.events ~}}        

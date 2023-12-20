@@ -3,7 +3,7 @@
   "profiles": {
     "DebugRoslynSourceGenerator": {
       "commandName": "DebugRoslynComponent",
-      "targetProject": "../MetaFarms.Libs.Generators.Templating.Sample/MetaFarms.Libs.Generators.Templating.Sample.csproj"
+      "targetProject": "../SourceScribe.Sample/SourceScribe.Sample.csproj"
     }
   }
 }
