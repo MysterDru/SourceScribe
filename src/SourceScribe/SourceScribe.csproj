@@ -2,13 +2,12 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <IsPackable>false</IsPackable>
+        <IsPackable>true</IsPackable>
         <Nullable>disable</Nullable>
         <LangVersion>11</LangVersion>
 
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <IsRoslynComponent>true</IsRoslynComponent>
-        <PackageId>SourceScribe</PackageId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -41,4 +40,20 @@
         <ItemGroup>
         </ItemGroup>
     </Target>
+
+    <!-- Nuget Package Properties -->
+    <PropertyGroup>
+        <PackageId>SourceScribe</PackageId>
+        <Authors>MysterDru</Authors>
+        <Product>SourceScribe</Product>
+        <Description>SourceScribe is a Roslyn Source Generator Project that allows generating compiled code from text template files. No need to write your own source generators for code generation!</Description>
+        <PackageProjectUrl>https://github.com/MysterDru/SourceScribe</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/MysterDru/SourceScribe</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <IsPackable>true</IsPackable>
+        <IncludeSymbols>true</IncludeSymbols>
+        <IncludeSource>true</IncludeSource>
+        <NoPackageAnalysis>true</NoPackageAnalysis>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+    </PropertyGroup>
 </Project>
